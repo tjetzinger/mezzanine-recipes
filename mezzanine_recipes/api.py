@@ -1,4 +1,5 @@
 import re
+import math
 
 from django.conf.urls.defaults import url
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +15,7 @@ from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
 from mezzanine.utils.timezone import now
 
 from tastypie import fields
+from tastypie.paginator import Paginator as TastyPaginator
 from tastypie.resources import ModelResource
 from tastypie.throttle import CacheDBThrottle
 from tastypie.utils import trailing_slash
@@ -82,6 +84,15 @@ class CamelCaseJSONSerializer(Serializer):
 
 
 
+class RestKitPaginator(TastyPaginator):
+    def page(self):
+        output = super(RestKitPaginator, self).page()
+        output['meta']['pageNumber'] = int(output['meta']['offset'] / output['meta']['limit']) + 1 if self.limit > 0 else 1
+        output['meta']['totalPages'] = math.ceil(float(output['meta']['total_count']) / output['meta']['limit']) if self.limit > 0 else 1
+        return output
+
+
+
 class CategoryResource(ModelResource):
     posts = fields.ToManyField('mezzanine_recipes.api.PostResource', 'blogposts')
 
@@ -131,6 +142,7 @@ class BlogPostResource(ModelResource):
         authentication = ApiKeyAuthentication()
         authorization = ReadOnlyAuthorization()
         limit = 5
+        paginator_class = RestKitPaginator
 
     def dehydrate_featured_image(self, bundle):
         if bundle.data['featured_image']:
@@ -203,6 +215,7 @@ class RecipeResource(ModelResource):
         authentication = ApiKeyAuthentication()
         authorization = ReadOnlyAuthorization()
         limit = 5
+        paginator_class = RestKitPaginator
 
     def dehydrate_featured_image(self, bundle):
         if bundle.data['featured_image']:
@@ -277,6 +290,7 @@ class PostResource(ModelResource):
         authentication = ApiKeyAuthentication()
         authorization = ReadOnlyAuthorization()
         limit = 5
+        paginator_class = RestKitPaginator
 
     def dehydrate_featured_image(self, bundle):
         if bundle.data['featured_image']:
@@ -360,6 +374,7 @@ class CommentResource(ModelResource):
         serializer = CamelCaseJSONSerializer()
         authentication = ApiKeyAuthentication()
         authorization = DjangoAuthorization()
+        limit = 0
 
     def dehydrate_user_email(self, bundle):
         return None
@@ -399,6 +414,7 @@ class RatingResource(ModelResource):
         serializer = CamelCaseJSONSerializer()
         authentication = ApiKeyAuthentication()
         authorization = DjangoAuthorization()
+        limit = 0
 
     def alter_list_data_to_serialize(self, request, data):
         data['ratings'] = data['objects']
@@ -463,6 +479,7 @@ class AssignedKeywordResource(ModelResource):
         serializer = CamelCaseJSONSerializer()
         authentication = ApiKeyAuthentication()
         authorization = ReadOnlyAuthorization()
+        limit = 0
 
     def alter_list_data_to_serialize(self, request, data):
         data['assignedKeywords'] = data['objects']
