@@ -227,7 +227,7 @@ class RecipeResource(ModelResource):
         if bundle.data['difficulty']:
             return dict(DIFFICULTIES)[bundle.data['difficulty']]
         else:
-            return None
+            return ""
 
     def prepend_urls(self):
         return [
@@ -517,7 +517,7 @@ class IngredientResource(ModelResource):
         if bundle.data['unit']:
             return dict(UNITS)[bundle.data['unit']]
         else:
-            return None
+            return ""
 
     def alter_list_data_to_serialize(self, request, data):
         data['ingredients'] = data['objects']
