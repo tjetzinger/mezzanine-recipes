@@ -18,6 +18,7 @@ setup(
         'django-tastypie==0.9.12-alpha',
         'South==0.7.6',
         'uuid==1.30',
+        'html2text==3.200.3',
     ],
     dependency_links = [
         'http://github.com/toastdriven/django-tastypie/tarball/master#egg=django-tastypie-0.9.12-alpha',

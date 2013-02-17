@@ -24,6 +24,8 @@ from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization, ReadOnlyAuthorization
 from tastypie.contrib.contenttypes.fields import GenericForeignKeyField
 
+import html2text
+
 from .models import BlogProxy, Recipe, BlogPost, Ingredient, WorkingHours, CookingTime, RestPeriod
 from .fields import DIFFICULTIES, UNITS
 
@@ -204,7 +206,7 @@ class RecipeResource(ModelResource):
     class Meta:
         queryset = Recipe.secondary.published().order_by('-publish_date')
         resource_name = "recipe"
-        fields = ['id', 'title', 'featured_image', 'summary', 'description', 'portions', 'difficulty', 'publish_date', 'allow_comments', 'comments_count', 'rating_average', 'rating_count', 'modified_date',]
+        fields = ['id', 'title', 'featured_image', 'summary', 'content', 'portions', 'difficulty', 'publish_date', 'allow_comments', 'comments_count', 'rating_average', 'rating_count', 'modified_date',]
         list_allowed_methods = ['get',]
         detail_allowed_methods = ['get',]
         throttle = CacheDBThrottle()
@@ -228,6 +230,12 @@ class RecipeResource(ModelResource):
             return dict(DIFFICULTIES)[bundle.data['difficulty']]
         else:
             return ""
+
+    def dehydrate(self, bundle):
+        content = bundle.data['content']
+        bundle.data['description'] = re.sub("\n+$", "", re.sub(" +\* ", "- ", html2text.html2text(content)))
+        del bundle.data['content']
+        return bundle
 
     def prepend_urls(self):
         return [
