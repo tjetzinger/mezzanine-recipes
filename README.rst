@@ -2,7 +2,7 @@
 mezzanine-recipes
 =================
 
-This plugin gives you a "Recipe" blog post type for your Mezzanine sites.
+This plugin gives you a "Recipe" blog post type for your Mezzanine sites with built-in REST API.
 
 Features
 ========
@@ -16,8 +16,8 @@ Features
 Installation
 ============
 
-* Run ``pip install -U https://github.com/tjetzinger/mezzanine-recipes/tarball/master`` (or, if you want to hack on mezzanine-recipes, clone it and run ``pip install -e path/to/repo``)
-* Install the Mezzanine CMS
+* Run ``pip install mezzanine-recipes`` (or, if you want to hack on mezzanine-recipes, clone it and run ``pip install -e path/to/repo``)
+* Create a Mezzanine CMS project
 * Add ``"mezzanine_recipes"`` followed by ``"tastypie"`` on top of your ``INSTALLED_APPS``
 * Migrate your database with ``python manage.py migrate mezzanine_recipes``
 * Install fixtures with ``python manage.py loaddata mezzanine_required.json``
@@ -59,9 +59,9 @@ Create a Recipe blog post in the Mezzanine admin (naming it something like "Reci
 Creating Templates
 ==================
 
-The template for a Recipe blog post is ``templates/recipe/blog_post_detail.html``.
+The template for the Recipe List can be found at ``templates/recipe/recipe_list.html`` and for a Recipe Blog Post at ``templates/recipe/recipe_detail.html``.
 
-The Recipe object is available at ``mezzanine_recipes.recipe``. It has the following properties:
+The Recipe object is available at ``mezzanine_recipes.models.recipe``. It has the following properties:
 
 * Periods and times: *WorkingHours*, *CookingTime*, *RestPeriod*
 * Cooking info: *ingredients*, *portions*, *difficulty*, *categories*
@@ -70,5 +70,5 @@ The Recipe object is available at ``mezzanine_recipes.recipe``. It has the follo
 To Do
 =====
 
-* Add some tests
-* Extend Recipe type to single steps
+* Implement some tests
+* Add single cooking steps to Recipe

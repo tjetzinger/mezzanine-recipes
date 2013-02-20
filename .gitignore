@@ -4,3 +4,6 @@
 .DS_Store
 .coverage
 local_settings.py
+
+/dist/
+/setuptools_git-1.0b1-py2.7.egg/
