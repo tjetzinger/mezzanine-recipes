@@ -13,7 +13,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Django==1.4.4',
+        'Django==1.11.29',
         'Mezzanine==1.4.1',
         'django-tastypie==0.9.12',
         'South==0.7.6',
